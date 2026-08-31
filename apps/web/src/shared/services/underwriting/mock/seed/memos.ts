@@ -187,31 +187,26 @@ export function buildMemoInputs({
       id: 'input-structure',
       label: 'Deal structure',
       detail: `${deal.transaction.instrument}, ${deal.transaction.maturityYears}-year tenor, use of proceeds and close timetable`,
-      itemCount: 1,
     },
     {
       id: 'input-security',
       label: 'Security terms',
       detail: `${security.lien} package, pricing and ${security.covenants.length} financial covenants`,
-      itemCount: security.covenants.length,
     },
     {
       id: 'input-financials',
       label: 'Financial metrics',
       detail: `${deal.financials.periodLabel} financials with prior-year comparatives`,
-      itemCount: 6,
     },
     {
       id: 'input-diligence',
       label: 'Diligence findings',
       detail: `${diligence.length} workstreams, ${findingCount} findings, ${openItemCount} open items`,
-      itemCount: findingCount,
     },
     {
       id: 'input-risks',
       label: 'Key risks & mitigants',
       detail: `${risks.length} risks with ${mitigantCount} mitigants across ${sourceCount} cited sources`,
-      itemCount: risks.length,
     },
   ];
 }

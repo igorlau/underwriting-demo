@@ -76,8 +76,6 @@ export interface Deal {
   riskLevel: RiskLevel;
   sector: string;
   sponsor: string;
-  /** Deal lead / originator initials shown in the pipeline. */
-  leadInitials: string;
   /** ISO date of the last material update. */
   updatedAt: string;
   /** Short operator-facing reason this deal may need attention. */
@@ -118,8 +116,6 @@ export interface BorrowerProfile {
 // ---------------------------------------------------------------------------
 
 export interface FinancialMetrics {
-  /** ISO date the figures are stated as of (e.g. LTM close). */
-  asOf: string;
   periodLabel: string;
   revenue: number;
   ebitda: number;
@@ -186,12 +182,6 @@ export interface Covenant {
 export type DiligenceCategory = 'financial' | 'commercial' | 'legal' | 'management';
 
 export type DiligenceStatus = 'complete' | 'in-review' | 'not-started';
-
-export const DILIGENCE_STATUS_LABELS: Record<DiligenceStatus, string> = {
-  complete: 'Complete',
-  'in-review': 'In Review',
-  'not-started': 'Not Started',
-};
 
 /** Compact per-category view used on the deal overview. */
 export interface DiligenceCategorySummary {
@@ -304,6 +294,4 @@ export interface MemoInputSummary {
   id: string;
   label: string;
   detail: string;
-  /** Number of underlying records rolled into this input. */
-  itemCount: number;
 }

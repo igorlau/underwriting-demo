@@ -1,5 +1,14 @@
-import type { ICMemo, ICMemoSection, MemoInputSummary } from '@uw/types';
-import { ArrowLeft, Check, CircleCheck, PenLine, RefreshCw, Sparkles, X } from 'lucide-react';
+import type { ICMemo, ICMemoSection, ICRecommendation, MemoInputSummary } from '@uw/types';
+import {
+  ArrowLeft,
+  Check,
+  CircleCheck,
+  CircleX,
+  PenLine,
+  RefreshCw,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDeal } from '@/features/deals/pages/deal-layout';
@@ -341,6 +350,34 @@ function GeneratingState({
 // Document
 // ---------------------------------------------------------------------------
 
+/**
+ * The verdict is read off the memo rather than written into the layout, so a
+ * different recommendation renders honestly instead of always reading "approve".
+ */
+const RECOMMENDATION: Record<
+  ICRecommendation,
+  { label: string; icon: typeof CircleCheck; tone: string; surface: string }
+> = {
+  approve: {
+    label: 'Approve',
+    icon: CircleCheck,
+    tone: 'text-accent',
+    surface: 'bg-accent-soft',
+  },
+  'approve-with-conditions': {
+    label: 'Approve with conditions',
+    icon: CircleCheck,
+    tone: 'text-accent',
+    surface: 'bg-accent-soft',
+  },
+  decline: {
+    label: 'Decline',
+    icon: CircleX,
+    tone: 'text-risk',
+    surface: 'bg-risk-soft',
+  },
+};
+
 function MemoDocument({
   memo,
   editing,
@@ -365,15 +402,27 @@ function MemoDocument({
           {formatDateTime(memo.generatedAt)}
         </p>
 
-        <div className="mt-7 rounded-xl bg-accent-soft px-6 py-5">
+        <div
+          className={cn('mt-7 rounded-xl px-6 py-5', RECOMMENDATION[memo.recommendation].surface)}
+        >
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-accent">
-              <CircleCheck className="size-4.5" strokeWidth={2.25} aria-hidden="true" />
-              Approve with conditions
+            <span
+              className={cn(
+                'inline-flex items-center gap-1.5 text-[15px] font-semibold',
+                RECOMMENDATION[memo.recommendation].tone,
+              )}
+            >
+              {(() => {
+                const Icon = RECOMMENDATION[memo.recommendation].icon;
+                return <Icon className="size-4.5" strokeWidth={2.25} aria-hidden="true" />;
+              })()}
+              {RECOMMENDATION[memo.recommendation].label}
             </span>
-            <span className="tnum text-[13px] text-accent/80">
-              {memo.conditions.length} conditions precedent
-            </span>
+            {memo.conditions.length > 0 ? (
+              <span className={cn('tnum text-[13px]', RECOMMENDATION[memo.recommendation].tone)}>
+                {memo.conditions.length} conditions precedent
+              </span>
+            ) : null}
           </div>
           <p className="mt-2.5 font-serif text-[16px] leading-relaxed">
             {memo.recommendationSummary}

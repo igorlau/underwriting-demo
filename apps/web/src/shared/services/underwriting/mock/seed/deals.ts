@@ -14,7 +14,6 @@ export const DEALS: Deal[] = [
     riskLevel: 'high',
     sector: 'Industrial Manufacturing',
     sponsor: 'Kestrel Capital Partners',
-    leadInitials: 'M.R.',
     updatedAt: '2026-08-28',
     attentionFlag: 'Legal diligence open — change-of-control review',
   },
@@ -27,7 +26,6 @@ export const DEALS: Deal[] = [
     riskLevel: 'medium',
     sector: 'Healthcare Services',
     sponsor: 'Bridgeport Equity',
-    leadInitials: 'J.T.',
     updatedAt: '2026-08-26',
     attentionFlag: 'Awaiting revised sponsor model',
   },
@@ -40,7 +38,6 @@ export const DEALS: Deal[] = [
     riskLevel: 'low',
     sector: 'Software & Data',
     sponsor: 'Verity Partners',
-    leadInitials: 'S.K.',
     updatedAt: '2026-08-29',
   },
 ];
@@ -71,7 +68,6 @@ export const DEAL_DETAILS: Record<string, Omit<DealDetail, 'risks'>> = {
       sponsor: 'Kestrel Capital Partners',
     },
     financials: {
-      asOf: '2026-06-30',
       periodLabel: 'LTM 30 Jun 2026',
       revenue: 200_000_000,
       ebitda: 40_000_000,
@@ -133,7 +129,6 @@ export const DEAL_DETAILS: Record<string, Omit<DealDetail, 'risks'>> = {
       sponsor: 'Bridgeport Equity',
     },
     financials: {
-      asOf: '2026-06-30',
       periodLabel: 'LTM 30 Jun 2026',
       revenue: 128_000_000,
       ebitda: 22_400_000,
@@ -201,7 +196,6 @@ export const DEAL_DETAILS: Record<string, Omit<DealDetail, 'risks'>> = {
       sponsor: 'Verity Partners',
     },
     financials: {
-      asOf: '2026-06-30',
       periodLabel: 'LTM 30 Jun 2026',
       revenue: 186_000_000,
       ebitda: 58_000_000,
