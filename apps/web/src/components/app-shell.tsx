@@ -1,48 +1,43 @@
 import type * as React from 'react';
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 /**
- * Application chrome. A single slim bar — the workspace itself carries the
- * navigation, so the shell stays out of the way.
+ * Application chrome. One slim bar that stays out of the way — the workspace
+ * carries its own navigation.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-surface">
-        <div className="mx-auto flex h-12 max-w-[1400px] items-center gap-3 px-6">
-          <Link to="/deals" className="flex items-center gap-2.5 rounded-sm">
+    <div className="min-h-screen bg-canvas">
+      <header className="sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-md">
+        <Container className="flex h-14 items-center gap-3">
+          <Link to="/deals" className="flex items-center gap-2.5">
             <span
-              className="flex size-6 items-center justify-center rounded-sm bg-primary text-[10px] font-semibold tracking-[0.02em] text-primary-foreground"
+              className="flex size-7 items-center justify-center rounded-lg bg-ink text-[12px] font-semibold text-white"
               aria-hidden="true"
             >
-              MC
+              M
             </span>
-            <span className="text-[13px] font-semibold tracking-[-0.01em]">
-              Meridian Credit Partners
-            </span>
+            <span className="text-[15px] font-semibold">Meridian Credit</span>
           </Link>
-          <span className="h-4 w-px bg-border" aria-hidden="true" />
-          <span className="label-micro">Underwriting Workspace</span>
 
-          <div className="ml-auto flex items-center gap-2.5">
-            <span className="hidden text-xs text-muted-foreground sm:inline">
-              Private Credit — Origination
-            </span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="hidden text-[13px] text-ink-2 sm:inline">Private Credit</span>
             <span
-              className="flex size-6 items-center justify-center rounded-full border border-border-strong bg-surface-sunken text-[10px] font-medium"
+              className="flex size-7 items-center justify-center rounded-full bg-surface-3 text-[12px] font-medium text-ink-2"
               title="M. Reyes"
             >
               MR
             </span>
           </div>
-        </div>
+        </Container>
       </header>
       <main>{children}</main>
     </div>
   );
 }
 
-/** Shared max-width container so every screen aligns to the same grid. */
+/** Shared max-width container so every screen aligns to one grid. */
 export function Container({
   children,
   className,
@@ -50,5 +45,5 @@ export function Container({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={`mx-auto max-w-[1400px] px-6 ${className ?? ''}`}>{children}</div>;
+  return <div className={cn('mx-auto w-full max-w-[1180px] px-6', className)}>{children}</div>;
 }

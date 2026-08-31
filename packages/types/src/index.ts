@@ -51,6 +51,14 @@ export const DEAL_STAGE_LABELS: Record<DealStage, string> = {
   'ic-memo': 'IC Memo',
 };
 
+/** Abbreviated forms for the compact pipeline rail, where width is scarce. */
+export const DEAL_STAGE_SHORT_LABELS: Record<DealStage, string> = {
+  deal: 'Deal',
+  securities: 'Securities',
+  diligence: 'Diligence',
+  'ic-memo': 'IC memo',
+};
+
 export type TransactionType =
   | 'Senior Secured Term Loan'
   | 'Unitranche'
@@ -145,17 +153,10 @@ export interface Security {
   benchmark: 'SOFR' | 'EURIBOR';
   /** Decimal fraction over the benchmark (0.06 === +6.00%). */
   spread: number;
-  /** Decimal fraction. */
-  floor: number;
-  /** Original issue discount, decimal fraction. */
-  oid: number;
   maturityYears: number;
   /** Annual amortization as a decimal fraction of principal. */
   amortization: number;
   lien: LienPosition;
-  collateral: string[];
-  guarantors: string;
-  callProtection: string;
   covenants: Covenant[];
 }
 
@@ -172,12 +173,10 @@ export interface Covenant {
   current: number;
   /** Always signed so that positive === favourable headroom. */
   headroom: number;
-  unit: 'x' | '%' | 'usd';
+  unit: 'x' | '%';
   status: CovenantStatus;
   testFrequency: string;
   description: string;
-  /** Optional step-down/step-up schedule, shown as supporting detail. */
-  schedule?: { period: string; threshold: number }[];
 }
 
 // ---------------------------------------------------------------------------

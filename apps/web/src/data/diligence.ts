@@ -27,16 +27,6 @@ export const DILIGENCE: Record<string, DiligenceItem[]> = {
           evidence: SOURCES.qoeNwc,
           linkedRiskIds: ['risk-acme-leverage', 'risk-acme-refi'],
         },
-        {
-          id: 'find-acme-fin-addbacks',
-          category: 'financial',
-          title: 'Management EBITDA add-backs partially disallowed',
-          detail:
-            '$2.1M of the $5.4M of management add-backs were disallowed, principally severance and ERP implementation costs assessed as recurring. Adjusted EBITDA of $40.0M compares to management’s $42.1M, raising entry leverage by approximately 0.3x.',
-          severity: 'medium',
-          evidence: SOURCES.qoeBridge,
-          linkedRiskIds: ['risk-acme-leverage'],
-        },
       ],
     },
     {
@@ -61,16 +51,6 @@ export const DILIGENCE: Record<string, DiligenceItem[]> = {
           severity: 'high',
           evidence: SOURCES.cddCustomers,
           linkedRiskIds: ['risk-acme-concentration'],
-        },
-        {
-          id: 'find-acme-com-backlog',
-          category: 'commercial',
-          title: 'Contracted backlog supports the FY2027 revenue plan',
-          detail:
-            'Contracted backlog of $148M covers approximately 71% of FY2027 budgeted revenue, up 9% year over year, with municipal infrastructure spending underpinning the pipeline.',
-          severity: 'low',
-          evidence: SOURCES.backlog,
-          linkedRiskIds: [],
         },
       ],
     },
@@ -112,7 +92,7 @@ export const DILIGENCE: Record<string, DiligenceItem[]> = {
       provider: 'Internal — Deal Team',
       updatedAt: '2026-08-05',
       summary:
-        'Experienced team with prior sponsor-backed experience. The 2025 CFO transition is the only watch item and is progressing well.',
+        'Experienced team with prior sponsor-backed experience and no material concerns identified across the executive group.',
       openItems: [],
       findings: [
         {
@@ -123,16 +103,6 @@ export const DILIGENCE: Record<string, DiligenceItem[]> = {
             'The CEO has 14 years at ACME, seven as chief executive, and previously led two sponsor-backed businesses to exit. Background and reference checks returned no adverse findings across the five-person executive team.',
           severity: 'low',
           evidence: SOURCES.mgmtRefs,
-          linkedRiskIds: [],
-        },
-        {
-          id: 'find-acme-mgmt-cfo',
-          category: 'management',
-          title: 'CFO appointed in Q2 2025',
-          detail:
-            'The CFO is 15 months in seat, having joined from a larger industrial platform. Monthly reporting has been rebuilt and the ERP migration completed in August 2026, though the finance function remains thin below the CFO.',
-          severity: 'low',
-          evidence: SOURCES.orgChart,
           linkedRiskIds: [],
         },
       ],

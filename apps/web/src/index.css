@@ -33,10 +33,13 @@
   --risk-soft: #fbecea;
   --risk-line: #f0cbc6;
 
-  /* On the dark deal header. */
+  /* On the dark deal header. Semantic hues are lightened to hold contrast. */
   --on-ink: #ffffff;
   --on-ink-2: #a3adb8;
   --on-ink-line: #2b3138;
+  --accent-on-ink: #4fc2a8;
+  --caution-on-ink: #e3b45f;
+  --risk-on-ink: #ef8f85;
 }
 
 @theme inline {
@@ -67,6 +70,9 @@
   --color-on-ink: var(--on-ink);
   --color-on-ink-2: var(--on-ink-2);
   --color-on-ink-line: var(--on-ink-line);
+  --color-accent-on-ink: var(--accent-on-ink);
+  --color-caution-on-ink: var(--caution-on-ink);
+  --color-risk-on-ink: var(--risk-on-ink);
 
   --font-sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
@@ -161,6 +167,7 @@
     *,
     *::before,
     *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: must beat utility-class transitions */
       transition-duration: 0.01ms !important;
     }
   }

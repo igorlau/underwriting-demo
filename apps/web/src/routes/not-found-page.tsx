@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 
 export function NotFoundPage() {
   return (
-    <Container className="py-16">
+    <Container className="py-20">
       <EmptyState
         title="Page not found"
-        description="The view you requested does not exist in this workspace."
+        description="The view you asked for does not exist in this workspace."
         action={
-          <Button asChild size="sm" variant="outline">
+          <Button asChild variant="outline">
             <Link to="/deals">Back to Deal Pipeline</Link>
           </Button>
         }

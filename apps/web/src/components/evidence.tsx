@@ -13,23 +13,22 @@ const ICON_BY_TYPE = {
 } as const;
 
 /**
- * A citation back to the underlying artifact. Every generated or synthesised
- * claim in the product carries one, so nothing reads as an unsupported
- * assertion.
+ * A citation back to the underlying artifact. Every synthesised claim in the
+ * product carries one, so nothing reads as an unsupported assertion.
  */
 export function EvidenceChip({ source, className }: { source: EvidenceRef; className?: string }) {
   const Icon = ICON_BY_TYPE[source.documentType];
   return (
     <span
       className={cn(
-        'inline-flex max-w-full items-center gap-1.5 rounded-sm border border-border bg-surface-sunken px-1.5 py-1 text-[11px] leading-tight text-muted-foreground',
+        'inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface-2 py-1 pr-3 pl-2.5 text-[13px] text-ink-2',
         className,
       )}
       title={`${source.documentName}, ${source.locator} — dated ${formatDate(source.asOf)}`}
     >
-      <Icon className="size-3 shrink-0 text-muted-foreground" aria-hidden="true" />
-      <span className="truncate text-foreground/85">{source.documentName}</span>
-      <span className="shrink-0 border-l border-border pl-1.5 tnum">{source.locator}</span>
+      <Icon className="size-3.5 shrink-0 text-ink-3" aria-hidden="true" />
+      <span className="truncate text-ink">{source.documentName}</span>
+      <span className="tnum shrink-0 text-ink-3">{source.locator}</span>
     </span>
   );
 }
@@ -46,8 +45,8 @@ export function EvidenceList({
   if (sources.length === 0) return null;
   return (
     <div className={className}>
-      <div className="label-micro mb-1.5">{label}</div>
-      <ul className="flex flex-wrap gap-1.5">
+      <div className="label mb-2">{label}</div>
+      <ul className="flex flex-wrap gap-2">
         {sources.map((source) => (
           <li key={source.id} className="min-w-0">
             <EvidenceChip source={source} />

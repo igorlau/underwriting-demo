@@ -33,7 +33,7 @@ export const RISKS: Record<string, Risk[]> = {
           status: 'proposed',
         },
       ],
-      linkedFindingIds: ['find-acme-fin-nwc', 'find-acme-fin-addbacks'],
+      linkedFindingIds: ['find-acme-fin-nwc'],
     },
     {
       id: 'risk-acme-concentration',

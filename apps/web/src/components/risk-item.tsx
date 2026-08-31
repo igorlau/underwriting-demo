@@ -1,5 +1,5 @@
 import type { Finding, Risk } from '@uw/types';
-import { ChevronRight, ShieldCheck } from 'lucide-react';
+import { ChevronDown, ShieldCheck } from 'lucide-react';
 import { useId, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { EvidenceList } from './evidence';
@@ -14,8 +14,9 @@ const CATEGORY_LABEL: Record<Risk['category'], string> = {
 };
 
 /**
- * A risk register entry. Collapsed it answers "how bad and what kind"; expanded
- * it gives the reasoning, the sources behind it, and what protects the lender.
+ * A risk register entry. Collapsed it answers "how bad, and what kind";
+ * expanded it gives the reasoning, the sources behind it, and what protects
+ * the lender.
  */
 export function RiskItem({
   risk,
@@ -23,7 +24,7 @@ export function RiskItem({
   defaultOpen = false,
 }: {
   risk: Risk;
-  /** Diligence findings that surfaced this risk, if loaded. */
+  /** Diligence findings that surfaced this risk, where loaded. */
   findings?: Finding[];
   defaultOpen?: boolean;
 }) {
@@ -32,58 +33,47 @@ export function RiskItem({
   const linked = findings.filter((f) => risk.linkedFindingIds.includes(f.id));
 
   return (
-    <article className="border-b border-border last:border-b-0">
+    <article className="border-b border-line last:border-b-0">
       <h3>
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls={panelId}
-          className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-sunken"
+          className="flex w-full items-center gap-3 px-6 py-4 text-left transition-colors hover:bg-surface-2"
         >
-          <ChevronRight
-            className={cn(
-              'size-4 shrink-0 text-muted-foreground transition-transform',
-              open && 'rotate-90',
-            )}
-            aria-hidden="true"
-          />
-          <span className="min-w-0 flex-1 text-[13px] font-semibold">{risk.title}</span>
+          <span className="min-w-0 flex-1 text-[15px] font-semibold">{risk.title}</span>
           <MetaChip className="hidden sm:inline-flex">{CATEGORY_LABEL[risk.category]}</MetaChip>
           <SeverityBadge severity={risk.severity} label="severity" />
+          <ChevronDown
+            className={cn('size-4 shrink-0 text-ink-3 transition-transform', open && 'rotate-180')}
+            aria-hidden="true"
+          />
         </button>
       </h3>
 
       {open ? (
-        <div
-          id={panelId}
-          className="space-y-4 border-t border-border bg-surface-sunken px-4 py-3.5"
-        >
-          <div>
-            <div className="label-micro mb-1.5">Assessment</div>
-            <p className="max-w-3xl text-[13px] leading-relaxed text-foreground/90">
-              {risk.explanation}
-            </p>
-          </div>
+        <div id={panelId} className="space-y-5 px-6 pb-6">
+          <p className="max-w-3xl text-[14.5px] leading-relaxed text-ink-2">{risk.explanation}</p>
 
           <EvidenceList sources={risk.evidence} />
 
           <div>
-            <div className="label-micro mb-1.5">Mitigants</div>
-            <ul className="space-y-1.5">
+            <div className="label mb-2">Mitigants</div>
+            <ul className="space-y-2.5">
               {risk.mitigants.map((mitigant) => (
-                <li key={mitigant.id} className="flex items-start gap-2">
+                <li key={mitigant.id} className="flex items-start gap-2.5">
                   <ShieldCheck
-                    className="mt-0.5 size-3.5 shrink-0 text-positive"
+                    className="mt-0.5 size-4 shrink-0 text-accent"
                     strokeWidth={2}
                     aria-hidden="true"
                   />
-                  <span className="text-[13px] leading-relaxed text-foreground/90">
-                    {mitigant.description}
+                  <span className="text-[14.5px] leading-relaxed">
+                    {mitigant.description}{' '}
                     <span
                       className={cn(
-                        'ml-1.5 align-[1px] text-[10px] font-medium uppercase tracking-[0.06em]',
-                        mitigant.status === 'in-place' ? 'text-positive' : 'text-muted-foreground',
+                        'text-[13px]',
+                        mitigant.status === 'in-place' ? 'text-accent' : 'text-ink-3',
                       )}
                     >
                       {mitigant.status === 'in-place' ? 'In place' : 'Proposed'}
@@ -96,12 +86,12 @@ export function RiskItem({
 
           {linked.length > 0 ? (
             <div>
-              <div className="label-micro mb-1.5">Raised by diligence</div>
-              <ul className="space-y-1">
+              <div className="label mb-2">Raised by diligence</div>
+              <ul className="space-y-1.5">
                 {linked.map((finding) => (
-                  <li key={finding.id} className="text-[13px] text-muted-foreground">
-                    <span className="text-foreground/80">{CATEGORY_LABEL[finding.category]}</span>
-                    <span className="mx-1.5 text-border-strong">/</span>
+                  <li key={finding.id} className="text-[14px] text-ink-2">
+                    <span className="text-ink">{CATEGORY_LABEL[finding.category]}</span>
+                    <span className="mx-2 text-line-strong">/</span>
                     {finding.title}
                   </li>
                 ))}

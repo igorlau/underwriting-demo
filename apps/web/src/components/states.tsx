@@ -1,44 +1,43 @@
-import { CircleAlert, Construction } from 'lucide-react';
+import { CircleAlert, LayersIcon } from 'lucide-react';
 import type * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
+import { Card } from './ui/card';
 
 export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-sm bg-muted', className)} />;
+  return <div className={cn('animate-pulse rounded-lg bg-surface-2', className)} />;
 }
 
-/** Placeholder that preserves the shape of the panel it is standing in for. */
-export function PanelSkeleton({ rows = 4, className }: { rows?: number; className?: string }) {
+/** Placeholder that keeps the shape of the card it stands in for. */
+export function CardSkeleton({ rows = 4, className }: { rows?: number; className?: string }) {
   return (
-    <div className={cn('rounded-md border border-border bg-surface', className)}>
-      <div className="border-b border-border px-4 py-2.5">
-        <Skeleton className="h-3.5 w-40" />
-      </div>
-      <div className="space-y-2.5 px-4 py-3.5">
+    <Card className={cn('px-6 py-6', className)}>
+      <Skeleton className="h-4 w-40" />
+      <div className="mt-5 space-y-3">
         {Array.from({ length: rows }, (_, i) => (
           <Skeleton
             // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder rows
             key={i}
-            className={cn('h-3.5', i % 3 === 0 ? 'w-full' : i % 3 === 1 ? 'w-5/6' : 'w-2/3')}
+            className={cn('h-4', i % 3 === 0 ? 'w-full' : i % 3 === 1 ? 'w-5/6' : 'w-2/3')}
           />
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
 
 export function ErrorState({ error, onRetry }: { error: Error; onRetry?: () => void }) {
   return (
-    <div className="rounded-md border border-border bg-surface px-4 py-8 text-center">
-      <CircleAlert className="mx-auto size-5 text-danger" aria-hidden="true" />
-      <p className="mt-2 text-[13px] font-medium">Could not load this view</p>
-      <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">{error.message}</p>
+    <Card className="px-6 py-12 text-center">
+      <CircleAlert className="mx-auto size-6 text-risk" strokeWidth={1.75} aria-hidden="true" />
+      <p className="mt-3 text-[15px] font-semibold">This view could not load</p>
+      <p className="mx-auto mt-1 max-w-md text-[14px] text-ink-2">{error.message}</p>
       {onRetry ? (
-        <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
-          Retry
+        <Button variant="outline" size="sm" className="mt-5" onClick={onRetry}>
+          Try again
         </Button>
       ) : null}
-    </div>
+    </Card>
   );
 }
 
@@ -46,32 +45,30 @@ export function EmptyState({
   title,
   description,
   action,
-  icon: Icon = Construction,
+  icon: Icon = LayersIcon,
 }: {
   title: string;
   description: React.ReactNode;
   action?: React.ReactNode;
-  icon?: typeof Construction;
+  icon?: typeof LayersIcon;
 }) {
   return (
-    <div className="rounded-md border border-dashed border-border-strong bg-surface px-6 py-10 text-center">
-      <Icon
-        className="mx-auto size-5 text-muted-foreground"
-        strokeWidth={1.75}
-        aria-hidden="true"
-      />
-      <p className="mt-2.5 text-[13px] font-semibold">{title}</p>
-      <div className="mx-auto mt-1.5 max-w-md text-xs leading-relaxed text-muted-foreground">
+    <Card className="px-6 py-14 text-center">
+      <span className="mx-auto flex size-11 items-center justify-center rounded-full bg-surface-2">
+        <Icon className="size-5 text-ink-3" strokeWidth={1.75} aria-hidden="true" />
+      </span>
+      <p className="mt-4 text-[16px] font-semibold">{title}</p>
+      <div className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-ink-2">
         {description}
       </div>
-      {action ? <div className="mt-4">{action}</div> : null}
-    </div>
+      {action ? <div className="mt-6">{action}</div> : null}
+    </Card>
   );
 }
 
 /**
  * Used where a deal exists in the pipeline but was intentionally not developed.
- * Stating the scope explicitly is clearer than an ambiguous empty screen.
+ * Stating the scope is clearer than an ambiguous empty screen.
  */
 export function PrototypeScopeState({
   borrowerName,
@@ -82,12 +79,12 @@ export function PrototypeScopeState({
 }) {
   return (
     <EmptyState
-      title={`${area} is not populated for ${borrowerName}`}
+      title={`No ${area.toLowerCase()} recorded for ${borrowerName}`}
       description={
         <>
-          This prototype develops <strong className="font-medium text-foreground">ACME Inc.</strong>{' '}
-          end to end. {borrowerName} carries pipeline and credit overview data only, so the
-          remaining workstreams are intentionally empty rather than filled with placeholder content.
+          This prototype develops <span className="font-medium text-ink">ACME Inc.</span> end to
+          end. {borrowerName} carries pipeline and overview data only, so the remaining workstreams
+          are left empty rather than filled with placeholder content.
         </>
       }
     />

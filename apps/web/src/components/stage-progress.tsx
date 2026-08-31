@@ -1,88 +1,122 @@
-import { DEAL_STAGE_LABELS, DEAL_STAGES, type DealStage } from '@uw/types';
+import { DEAL_STAGE_LABELS, DEAL_STAGE_SHORT_LABELS, DEAL_STAGES, type DealStage } from '@uw/types';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /**
  * The underwriting process rail: Deal → Securities → Due Diligence → IC Memo.
  * Completed stages carry a check, the current stage a filled ring, future
- * stages a hollow node — so the state is legible without relying on colour.
+ * stages a hollow node — legible without relying on colour.
+ *
+ * Laid out as four equal grid columns with the connectors drawn between node
+ * centres, so label width can never push the rail out of shape. Labels centre
+ * under their node and wrap rather than collide when space is tight.
  */
 export function StageProgress({
   stage,
   size = 'md',
+  tone = 'light',
   className,
 }: {
   stage: DealStage;
   size?: 'sm' | 'md';
+  /** `dark` is used on the ink deal header. */
+  tone?: 'light' | 'dark';
   className?: string;
 }) {
   const currentIndex = DEAL_STAGES.indexOf(stage);
-  const node = size === 'sm' ? 'size-4' : 'size-5';
-  const label = size === 'sm' ? 'text-[10px]' : 'text-[11px]';
+  const dark = tone === 'dark';
+  const compact = size === 'sm';
+
+  const nodeSize = compact ? 18 : 22;
+  // Keeps the connector clear of the node it starts from.
+  const inset = nodeSize / 2 + 6;
+  const labels = compact ? DEAL_STAGE_SHORT_LABELS : DEAL_STAGE_LABELS;
 
   return (
     <ol
-      className={cn('flex items-start', className)}
+      className={cn('grid grid-cols-4', className)}
       aria-label={`Underwriting progress — current stage ${DEAL_STAGE_LABELS[stage]}`}
     >
       {DEAL_STAGES.map((s, index) => {
         const done = index < currentIndex;
         const current = index === currentIndex;
+        const last = index === DEAL_STAGES.length - 1;
+
         return (
           <li
             key={s}
-            className={cn(
-              'flex min-w-0 items-start',
-              index === DEAL_STAGES.length - 1 ? '' : 'flex-1',
-            )}
+            className="relative flex flex-col items-center gap-2"
             aria-current={current ? 'step' : undefined}
           >
-            <div className="flex flex-col items-center gap-1.5">
-              <span
-                className={cn(
-                  'flex shrink-0 items-center justify-center rounded-full',
-                  node,
-                  done && 'bg-primary text-primary-foreground',
-                  current && 'border-2 border-primary bg-surface',
-                  !done && !current && 'border border-border-strong bg-surface',
-                )}
-              >
-                {done ? (
-                  <Check
-                    className={size === 'sm' ? 'size-2.5' : 'size-3'}
-                    strokeWidth={3}
-                    aria-hidden="true"
-                  />
-                ) : current ? (
-                  <span
-                    className={cn('rounded-full bg-primary', size === 'sm' ? 'size-1.5' : 'size-2')}
-                  />
-                ) : null}
-              </span>
-              <span
-                className={cn(
-                  'whitespace-nowrap font-medium tracking-[0.01em]',
-                  label,
-                  current
-                    ? 'text-foreground'
-                    : done
-                      ? 'text-muted-foreground'
-                      : 'text-muted-foreground/70',
-                )}
-              >
-                {DEAL_STAGE_LABELS[s]}
-              </span>
-            </div>
-            {index < DEAL_STAGES.length - 1 ? (
+            {!last ? (
               <span
                 aria-hidden="true"
                 className={cn(
-                  'mx-1.5 h-px flex-1 self-start',
-                  size === 'sm' ? 'mt-2' : 'mt-2.5',
-                  done ? 'bg-primary' : 'bg-border-strong',
+                  'absolute h-0.5 rounded-full',
+                  done
+                    ? dark
+                      ? 'bg-accent-on-ink'
+                      : 'bg-accent'
+                    : dark
+                      ? 'bg-on-ink-line'
+                      : 'bg-line-strong',
                 )}
+                style={{
+                  top: nodeSize / 2 - 1,
+                  left: `calc(50% + ${inset}px)`,
+                  // Columns are equal width, so -50% lands on the next node's centre.
+                  right: `calc(-50% + ${inset}px)`,
+                }}
               />
             ) : null}
+
+            <span
+              style={{ width: nodeSize, height: nodeSize }}
+              className={cn(
+                'flex shrink-0 items-center justify-center rounded-full transition-colors',
+                done && (dark ? 'bg-accent-on-ink text-ink' : 'bg-accent text-white'),
+                current && (dark ? 'bg-white' : 'bg-surface ring-2 ring-accent'),
+                !done &&
+                  !current &&
+                  (dark
+                    ? 'border border-on-ink-line bg-ink'
+                    : 'border border-line-strong bg-surface'),
+              )}
+            >
+              {done ? (
+                <Check
+                  className={compact ? 'size-3' : 'size-3.5'}
+                  strokeWidth={3}
+                  aria-hidden="true"
+                />
+              ) : current ? (
+                <span
+                  className={cn(
+                    'rounded-full',
+                    dark ? 'bg-ink' : 'bg-accent',
+                    compact ? 'size-1.5' : 'size-2',
+                  )}
+                />
+              ) : null}
+            </span>
+
+            <span
+              className={cn(
+                'px-0.5 text-center leading-tight',
+                compact ? 'text-[11px]' : 'text-[13px]',
+                current
+                  ? cn('font-semibold', dark ? 'text-on-ink' : 'text-ink')
+                  : done
+                    ? dark
+                      ? 'text-on-ink-2'
+                      : 'text-ink-2'
+                    : dark
+                      ? 'text-on-ink-2/60'
+                      : 'text-ink-3',
+              )}
+            >
+              {labels[s]}
+            </span>
           </li>
         );
       })}

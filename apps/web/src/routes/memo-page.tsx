@@ -1,21 +1,12 @@
 import type { ICMemo, ICMemoSection, MemoInputSummary } from '@uw/types';
-import {
-  ArrowLeft,
-  Check,
-  CircleCheck,
-  FileText,
-  PenLine,
-  RefreshCw,
-  Sparkles,
-  X,
-} from 'lucide-react';
+import { ArrowLeft, Check, CircleCheck, PenLine, RefreshCw, Sparkles, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EvidenceChip } from '@/components/evidence';
 import { SeverityMeter } from '@/components/indicators';
-import { ErrorState, PanelSkeleton, PrototypeScopeState } from '@/components/states';
+import { CardSkeleton, ErrorState, PrototypeScopeState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Panel, PanelBody, PanelHeader } from '@/components/ui/panel';
+import { Card } from '@/components/ui/card';
 import { useAsync } from '@/hooks/use-async';
 import { formatDateTime } from '@/lib/format';
 import { cn } from '@/lib/utils';
@@ -25,7 +16,7 @@ import { useDeal } from './deal-layout';
 /**
  * IC memo. The AI drafts a decision-ready artifact from the underwriting
  * record; the deal team reviews, edits and owns it. Generation is deliberately
- * legible — the inputs are shown before it runs and cited after.
+ * legible — inputs shown before it runs, sources cited after.
  */
 export function MemoPage() {
   const deal = useDeal();
@@ -71,7 +62,7 @@ export function MemoPage() {
   }, [deal.id]);
 
   if (existing.status === 'loading' || inputs.status === 'loading') {
-    return <PanelSkeleton rows={6} />;
+    return <CardSkeleton rows={6} />;
   }
   if (existing.status === 'error')
     return <ErrorState error={existing.error} onRetry={existing.reload} />;
@@ -94,25 +85,23 @@ export function MemoPage() {
   const shown = editing && draft ? draft : memo;
 
   return (
-    <div className="space-y-4">
-      <Panel>
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3">
+    <div className="rise space-y-6">
+      <Card className="px-6 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-              <h2 className="text-[13px] font-semibold">IC Memorandum</h2>
-              <span className="inline-flex items-center gap-1 rounded-sm border border-info/25 bg-info-surface px-1.5 py-0.5 text-[11px] font-medium text-info">
-                <Sparkles className="size-3" aria-hidden="true" />
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <h2 className="text-[15px] font-semibold">IC memorandum</h2>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-[13px] font-medium text-accent">
+                <Sparkles className="size-3.5" aria-hidden="true" />
                 AI-drafted
               </span>
-              <span className="tnum text-[11px] text-muted-foreground">
-                Version {shown.version}
-                <span className="mx-1.5 text-border-strong">·</span>
-                {formatDateTime(shown.generatedAt)}
-              </span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Synthesised from {shown.inputs.length} underwriting inputs. Reviewed and owned by the
-              deal team.
+            <p className="tnum mt-1 text-[13px] text-ink-3">
+              Version {shown.version}
+              <span className="mx-1.5">·</span>
+              {formatDateTime(shown.generatedAt)}
+              <span className="mx-1.5">·</span>
+              from {shown.inputs.length} underwriting inputs
             </p>
           </div>
 
@@ -120,7 +109,7 @@ export function MemoPage() {
             {editing ? (
               <>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => {
                     setEditing(false);
@@ -159,7 +148,7 @@ export function MemoPage() {
                   <RefreshCw aria-hidden="true" />
                   Regenerate
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => navigate(`/deals/${deal.id}`)}>
+                <Button variant="ghost" size="sm" onClick={() => navigate(`/deals/${deal.id}`)}>
                   <ArrowLeft aria-hidden="true" />
                   Back to Underwriting
                 </Button>
@@ -169,27 +158,25 @@ export function MemoPage() {
         </div>
 
         {editing ? (
-          <p className="border-t border-border bg-warning-surface px-4 py-2 text-xs text-warning">
-            Editing narrative sections. Changes are held locally in this prototype and are not
-            persisted.
+          <p className="mt-4 rounded-lg bg-caution-soft px-4 py-2.5 text-[13px] text-caution">
+            Editing narrative sections. Changes stay in this browser — the prototype does not
+            persist them.
           </p>
         ) : null}
-      </Panel>
+      </Card>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[180px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[172px_minmax(0,1fr)]">
         <nav aria-label="Memo sections" className="hidden lg:block">
-          <div className="sticky top-[76px]">
-            <div className="label-micro mb-2">Contents</div>
-            <ol className="space-y-0.5">
+          <div className="sticky top-[104px]">
+            <div className="label mb-3">Contents</div>
+            <ol className="space-y-1.5">
               {shown.sections.map((section, index) => (
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className="flex gap-2 rounded-sm py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                    className="flex gap-2.5 text-[13px] text-ink-2 transition-colors hover:text-ink"
                   >
-                    <span className="tnum text-muted-foreground/70">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
+                    <span className="tnum text-ink-3">{index + 1}</span>
                     {section.title}
                   </a>
                 </li>
@@ -238,52 +225,42 @@ function NotGeneratedState({
   onGenerate: () => void;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-      <Panel className="flex flex-col justify-center px-8 py-10 text-center">
-        <FileText
-          className="mx-auto size-6 text-muted-foreground"
-          strokeWidth={1.5}
-          aria-hidden="true"
-        />
-        <h2 className="mt-3 text-[15px] font-semibold">IC Memo not yet generated</h2>
-        <p className="mx-auto mt-2 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-          No investment committee memorandum has been drafted for {borrowerName}. Generating one
-          composes the completed underwriting record into a decision-ready document for review.
+    <div className="rise mx-auto max-w-3xl">
+      <Card className="px-8 py-10 text-center sm:px-12">
+        <h2 className="text-[24px] font-semibold tracking-[-0.025em]">IC memo not yet generated</h2>
+        <p className="mx-auto mt-2.5 max-w-lg text-[15px] leading-relaxed text-ink-2">
+          Draft an investment committee memorandum for {borrowerName} from the completed
+          underwriting record. You review, edit and own the result.
         </p>
-        <div className="mt-5">
+
+        <div className="mt-7">
           <Button size="lg" onClick={onGenerate}>
             <Sparkles aria-hidden="true" />
             Generate IC Memo
           </Button>
         </div>
-        <p className="mx-auto mt-3 max-w-sm text-[11px] leading-relaxed text-muted-foreground">
-          The draft is prepared for the deal team to review, edit and own. It does not constitute an
-          approval.
-        </p>
-      </Panel>
 
-      <Panel>
-        <PanelHeader title="The memo will be based on" meta={`${inputs.length} inputs`} />
-        <PanelBody className="py-2">
-          <ul className="divide-y divide-border">
+        <div className="mt-9 border-t border-line pt-7 text-left">
+          <div className="label mb-4 text-center">The memo will be based on</div>
+          <ul className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
             {inputs.map((input) => (
-              <li key={input.id} className="flex items-start gap-2.5 py-2.5">
+              <li key={input.id} className="flex items-start gap-2.5">
                 <CircleCheck
-                  className="mt-0.5 size-3.5 shrink-0 text-positive"
+                  className="mt-0.5 size-4 shrink-0 text-accent"
                   strokeWidth={2}
                   aria-hidden="true"
                 />
                 <div className="min-w-0">
-                  <div className="text-[13px] font-medium">{input.label}</div>
-                  <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                  <div className="text-[14.5px] font-medium">{input.label}</div>
+                  <div className="mt-0.5 text-[13px] leading-relaxed text-ink-3">
                     {input.detail}
                   </div>
                 </div>
               </li>
             ))}
           </ul>
-        </PanelBody>
-      </Panel>
+        </div>
+      </Card>
     </div>
   );
 }
@@ -308,46 +285,45 @@ function GeneratingState({
   borrowerName: string;
 }) {
   const activeIndex = progress?.index ?? 0;
-  const total = GENERATION_STEPS.length;
-  const percent = Math.round(((activeIndex + 1) / total) * 100);
+  const percent = Math.round(((activeIndex + 1) / GENERATION_STEPS.length) * 100);
 
   return (
-    <Panel className="mx-auto max-w-2xl">
-      <PanelHeader title={`Drafting IC memorandum — ${borrowerName}`} meta={`${percent}%`} />
-      <PanelBody className="py-5">
-        <div className="h-1 w-full overflow-hidden rounded-sm bg-muted" role="presentation">
+    <div className="mx-auto max-w-2xl">
+      <Card className="px-8 py-9 sm:px-10">
+        <h2 className="text-[20px] font-semibold tracking-[-0.02em]">
+          Drafting IC memorandum — {borrowerName}
+        </h2>
+        <p className="tnum mt-1 text-[14px] text-ink-2">{percent}% complete</p>
+
+        <div className="mt-6 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
           <div
-            className="h-full bg-primary transition-[width] duration-500 ease-out"
+            className="h-full rounded-full bg-accent transition-[width] duration-500 ease-out"
             style={{ width: `${percent}%` }}
           />
         </div>
 
-        <ol className="mt-5 space-y-2.5" aria-live="polite">
+        <ol className="mt-7 space-y-3.5" aria-live="polite">
           {GENERATION_STEPS.map((step, index) => {
             const done = index < activeIndex;
             const active = index === activeIndex;
             return (
-              <li key={step} className="flex items-center gap-2.5">
-                <span className="flex size-4 shrink-0 items-center justify-center">
+              <li key={step} className="flex items-center gap-3">
+                <span className="flex size-5 shrink-0 items-center justify-center">
                   {done ? (
-                    <Check className="size-3.5 text-positive" strokeWidth={3} aria-hidden="true" />
+                    <Check className="size-4 text-accent" strokeWidth={3} aria-hidden="true" />
                   ) : active ? (
                     <span
-                      className="size-2 animate-pulse rounded-full bg-primary"
+                      className="size-2.5 animate-pulse rounded-full bg-accent"
                       aria-hidden="true"
                     />
                   ) : (
-                    <span className="size-1.5 rounded-full bg-border-strong" aria-hidden="true" />
+                    <span className="size-1.5 rounded-full bg-line-strong" aria-hidden="true" />
                   )}
                 </span>
                 <span
                   className={cn(
-                    'text-[13px]',
-                    done
-                      ? 'text-muted-foreground'
-                      : active
-                        ? 'font-medium text-foreground'
-                        : 'text-muted-foreground/60',
+                    'text-[14.5px]',
+                    done ? 'text-ink-2' : active ? 'font-medium text-ink' : 'text-ink-3',
                   )}
                 >
                   {step}
@@ -356,8 +332,8 @@ function GeneratingState({
             );
           })}
         </ol>
-      </PanelBody>
-    </Panel>
+      </Card>
+    </div>
   );
 }
 
@@ -375,45 +351,41 @@ function MemoDocument({
   onEditParagraph: (sectionId: string, paragraphIndex: number, value: string) => void;
 }) {
   return (
-    <article className="rounded-md border border-border bg-surface">
-      <header className="border-b border-border px-8 py-7">
-        <div className="label-micro text-danger">
-          Confidential — For investment committee use only
-        </div>
-        <h1 className="mt-2.5 font-serif text-[24px] font-semibold leading-tight tracking-[-0.01em]">
+    <article className="overflow-hidden rounded-xl border border-line bg-surface shadow-card">
+      <header className="border-b border-line px-8 pt-10 pb-8 sm:px-12">
+        <p className="text-[13px] font-medium text-risk">
+          Confidential — for investment committee use only
+        </p>
+        <h1 className="mt-3 font-serif text-[30px] font-semibold leading-tight tracking-[-0.02em]">
           {memo.title}
         </h1>
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="mt-2.5 text-[13px] text-ink-3">
           Prepared by {memo.preparedBy}
-          <span className="mx-1.5 text-border-strong">·</span>
+          <span className="mx-1.5">·</span>
           {formatDateTime(memo.generatedAt)}
-          <span className="mx-1.5 text-border-strong">·</span>
-          Version {memo.version}
         </p>
 
-        <div className="mt-5 rounded-sm border border-border bg-surface-sunken px-4 py-3.5">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <span className="label-micro">Recommendation</span>
-            <span className="inline-flex items-center gap-1.5 rounded-sm border border-positive/25 bg-positive-surface px-2 py-0.5 text-xs font-semibold text-positive">
-              <CircleCheck className="size-3.5" strokeWidth={2.25} aria-hidden="true" />
+        <div className="mt-7 rounded-xl bg-accent-soft px-6 py-5">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <span className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-accent">
+              <CircleCheck className="size-4.5" strokeWidth={2.25} aria-hidden="true" />
               Approve with conditions
             </span>
-            <span className="tnum text-xs text-muted-foreground">
+            <span className="tnum text-[13px] text-accent/80">
               {memo.conditions.length} conditions precedent
             </span>
           </div>
-          <p className="mt-2 font-serif text-[14px] leading-relaxed text-foreground/90">
+          <p className="mt-2.5 font-serif text-[16px] leading-relaxed">
             {memo.recommendationSummary}
           </p>
         </div>
       </header>
 
-      <div className="divide-y divide-border">
-        {memo.sections.map((section, index) => (
+      <div className="divide-y divide-line">
+        {memo.sections.map((section) => (
           <MemoSectionBlock
             key={section.id}
             section={section}
-            index={index}
             editing={editing}
             onEditParagraph={onEditParagraph}
           />
@@ -425,23 +397,18 @@ function MemoDocument({
 
 function MemoSectionBlock({
   section,
-  index,
   editing,
   onEditParagraph,
 }: {
   section: ICMemoSection;
-  index: number;
   editing: boolean;
   onEditParagraph: (sectionId: string, paragraphIndex: number, value: string) => void;
 }) {
   return (
-    <section id={section.id} className="scroll-mt-36 px-8 py-6">
-      <h2 className="flex items-baseline gap-2.5 text-[13px] font-semibold tracking-[0.01em]">
-        <span className="tnum text-muted-foreground/70">{String(index + 1).padStart(2, '0')}</span>
-        {section.title}
-      </h2>
+    <section id={section.id} className="scroll-mt-32 px-8 py-9 sm:px-12">
+      <h2 className="text-[17px] font-semibold">{section.title}</h2>
 
-      <div className="mt-3 max-w-[74ch] space-y-3">
+      <div className="mt-4 max-w-[70ch] space-y-4">
         {section.body.map((paragraph, paragraphIndex) =>
           editing ? (
             <textarea
@@ -449,14 +416,14 @@ function MemoSectionBlock({
               key={paragraphIndex}
               value={paragraph}
               onChange={(event) => onEditParagraph(section.id, paragraphIndex, event.target.value)}
-              rows={Math.max(3, Math.ceil(paragraph.length / 95))}
-              className="w-full resize-y rounded-sm border border-border-strong bg-surface-sunken px-2.5 py-2 font-serif text-[14px] leading-relaxed focus:bg-surface"
+              rows={Math.max(3, Math.ceil(paragraph.length / 88))}
+              className="w-full resize-y rounded-lg border border-line-strong bg-surface-2 px-4 py-3 font-serif text-[16px] leading-relaxed focus:bg-surface"
             />
           ) : (
             <p
               // biome-ignore lint/suspicious/noArrayIndexKey: static rendered prose
               key={paragraphIndex}
-              className="font-serif text-[14.5px] leading-[1.7] text-foreground/90"
+              className="font-serif text-[16px] leading-[1.75]"
             >
               {paragraph}
             </p>
@@ -465,45 +432,41 @@ function MemoSectionBlock({
       </div>
 
       {section.terms ? (
-        <dl className="mt-4 max-w-2xl divide-y divide-border rounded-sm border border-border">
+        <dl className="mt-6 max-w-xl space-y-2.5 border-l-2 border-line pl-5">
           {section.terms.map((term) => (
-            <div key={term.label} className="flex items-baseline justify-between gap-6 px-3 py-1.5">
-              <dt className="text-xs text-muted-foreground">{term.label}</dt>
-              <dd className="tnum text-right text-[13px] font-medium">{term.value}</dd>
+            <div key={term.label} className="flex items-baseline justify-between gap-6">
+              <dt className="text-[14px] text-ink-2">{term.label}</dt>
+              <dd className="tnum text-right text-[14px] font-medium">{term.value}</dd>
             </div>
           ))}
         </dl>
       ) : null}
 
       {section.bullets ? (
-        <ul className="mt-4 max-w-[74ch] space-y-2">
+        <ul className="mt-5 max-w-[70ch] space-y-3">
           {section.bullets.map((bullet) => (
-            <li key={bullet} className="flex items-start gap-2.5">
+            <li key={bullet} className="flex items-start gap-3">
               <span
-                className="mt-[9px] size-1 shrink-0 rounded-full bg-muted-foreground"
+                className="mt-[11px] size-1.5 shrink-0 rounded-full bg-accent"
                 aria-hidden="true"
               />
-              <span className="font-serif text-[14.5px] leading-[1.7] text-foreground/90">
-                {bullet}
-              </span>
+              <span className="font-serif text-[16px] leading-[1.75]">{bullet}</span>
             </li>
           ))}
         </ul>
       ) : null}
 
       {section.riskBlocks ? (
-        <div className="mt-4 max-w-[74ch] divide-y divide-border rounded-sm border border-border">
+        <div className="mt-5 max-w-[70ch] space-y-5">
           {section.riskBlocks.map((block) => (
-            <div key={block.title} className="px-3.5 py-3">
-              <div className="flex items-center gap-2">
+            <div key={block.title} className="rounded-xl bg-surface-2 px-5 py-4">
+              <div className="flex items-center gap-2.5">
                 <SeverityMeter severity={block.severity} />
-                <h3 className="text-[13px] font-semibold">{block.title}</h3>
+                <h3 className="text-[15px] font-semibold">{block.title}</h3>
               </div>
-              <p className="mt-1.5 font-serif text-[14px] leading-[1.65] text-foreground/90">
-                {block.body}
-              </p>
-              <p className="mt-2 border-l-2 border-positive/40 pl-2.5 font-serif text-[14px] leading-[1.65] text-foreground/80">
-                <span className="label-micro mr-1.5 not-italic text-positive">Mitigants</span>
+              <p className="mt-2 font-serif text-[15.5px] leading-[1.7]">{block.body}</p>
+              <p className="mt-3 border-l-2 border-accent pl-4 font-serif text-[15.5px] leading-[1.7] text-ink-2">
+                <span className="font-sans text-[13px] font-medium text-accent">Mitigants. </span>
                 {block.mitigant}
               </p>
             </div>
@@ -512,8 +475,8 @@ function MemoSectionBlock({
       ) : null}
 
       {section.sources.length > 0 ? (
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-border pt-3">
-          <span className="label-micro mr-1">Sources</span>
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <span className="label mr-1">Sources</span>
           {section.sources.map((source) => (
             <EvidenceChip key={source.id} source={source} />
           ))}

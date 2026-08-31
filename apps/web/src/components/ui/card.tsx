@@ -84,10 +84,7 @@ export function TermRow({
       <dt className="text-[14px] text-ink-2">{label}</dt>
       <dd className="text-right">
         <span
-          className={cn(
-            'tnum text-[14px]',
-            emphasis ? 'text-[15px] font-semibold' : 'font-medium',
-          )}
+          className={cn('tnum text-[14px]', emphasis ? 'text-[15px] font-semibold' : 'font-medium')}
         >
           {value}
         </span>

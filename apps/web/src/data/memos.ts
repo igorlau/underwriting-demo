@@ -51,7 +51,7 @@ export function buildICMemo({
       title: 'Executive Summary',
       sources: [SOURCES.termSheet, SOURCES.modelDebt, SOURCES.qoeBridge],
       body: [
-        `${borrower.legalName} (“${deal.borrowerName}” or the “Company”) is seeking a ${formatUsdCompact(tx.facilityAmount)} ${tx.instrument.toLowerCase()} to refinance existing senior debt, fund a bolt-on acquisition and pay transaction expenses. The facility would price at ${spread} with a ${formatPercent(security.floor, 2)} floor, amortise at ${formatPercent(security.amortization, 0)} per annum and mature ${tx.maturityYears} years from close, secured on a ${security.lien.toLowerCase()} basis over substantially all assets of the Company and its material subsidiaries.`,
+        `${borrower.legalName} (“${deal.borrowerName}” or the “Company”) is seeking a ${formatUsdCompact(tx.facilityAmount)} ${tx.instrument.toLowerCase()} to refinance existing senior debt, fund a bolt-on acquisition and pay transaction expenses. The facility would price at ${spread}, amortise at ${formatPercent(security.amortization, 0)} per annum and mature ${tx.maturityYears} years from close, secured on a ${security.lien.toLowerCase()} basis over substantially all assets of the Company and its material subsidiaries.`,
         `The Company generated ${formatUsdCompact(fin.revenue)} of revenue and ${formatUsdCompact(fin.ebitda)} of adjusted EBITDA in the ${fin.periodLabel} period, a ${formatPercent(fin.ebitdaMargin, 1)} margin. Opening net leverage of ${formatMultiple(fin.netLeverage)} sits at the upper end of our appetite for the sector, and interest coverage of ${formatMultiple(fin.interestCoverage)} leaves limited capacity to absorb a further rise in base rates. Both metrics improve on the prior year on the back of ${formatPercent((fin.revenue / (fin.priorYear?.revenue ?? fin.revenue) - 1) as number, 1)} revenue growth.`,
         `Financial, commercial and management diligence are complete. ${openLegal.length > 0 ? `Legal diligence remains in review pending resolution of a change-of-control provision in the Company’s largest customer contract, which we have made a condition precedent to funding.` : 'All diligence workstreams are complete.'} On balance we consider the credit bankable at the proposed structure and recommend approval subject to the conditions set out below.`,
       ],
@@ -64,14 +64,12 @@ export function buildICMemo({
         { label: 'Borrower', value: borrower.legalName },
         { label: 'Facility', value: `${formatUsdExact(tx.facilityAmount)} ${tx.instrument}` },
         { label: 'Ranking', value: `${security.lien}, senior secured` },
-        { label: 'Pricing', value: `${spread} (${formatPercent(security.floor, 2)} floor)` },
-        { label: 'Original issue discount', value: `${(100 - security.oid * 100).toFixed(1)}` },
+        { label: 'Pricing', value: spread },
         { label: 'Tenor', value: `${tx.maturityYears} years from close` },
         {
           label: 'Amortisation',
           value: `${formatPercent(security.amortization, 0)} per annum, payable quarterly`,
         },
-        { label: 'Call protection', value: security.callProtection },
         { label: 'Target close', value: formatDate(tx.closeTargetDate) },
       ],
       body: [
@@ -123,13 +121,12 @@ export function buildICMemo({
       title: 'Proposed Structure',
       sources: [SOURCES.termSheet, SOURCES.modelCovenant],
       body: [
-        `The facility is structured as a ${formatUsdCompact(security.principal)} ${security.instrument.toLowerCase()} ranking ${security.lien.toLowerCase()}, guaranteed by ${security.guarantors.toLowerCase()}.`,
+        `The facility is structured as a ${formatUsdCompact(security.principal)} ${security.instrument.toLowerCase()} ranking ${security.lien.toLowerCase()} over substantially all assets of the Company and its material subsidiaries.`,
         leverageCovenant && coverageCovenant
-          ? `Two financial covenants are proposed, both tested quarterly. Maximum net leverage is set at ${formatMultiple(leverageCovenant.threshold)} against ${formatMultiple(leverageCovenant.current)} at close — ${formatMultiple(leverageCovenant.headroom)} of headroom, or approximately a 9% cushion to EBITDA — stepping down to ${formatMultiple(leverageCovenant.schedule?.at(-1)?.threshold ?? 4.75)} by FY2030. Minimum interest coverage is set at ${formatMultiple(coverageCovenant.threshold)} against ${formatMultiple(coverageCovenant.current)}. The coverage covenant is the tighter of the two at close and is the metric we expect to be tested first in a rate-driven downside.`
+          ? `Two financial covenants are proposed, both tested quarterly. Maximum net leverage is set at ${formatMultiple(leverageCovenant.threshold)} against ${formatMultiple(leverageCovenant.current)} at close — ${formatMultiple(leverageCovenant.headroom)} of headroom, or approximately a 9% cushion to EBITDA — stepping down to 4.75x by FY2030. Minimum interest coverage is set at ${formatMultiple(coverageCovenant.threshold)} against ${formatMultiple(coverageCovenant.current)}. The coverage covenant is the tighter of the two at close and is the metric we expect to be tested first in a rate-driven downside.`
           : '',
-        `A capital expenditure limit, a 50% excess cash flow sweep stepping to 25% below 4.00x, and mandatory prepayments from asset sales and debt issuance complete the package. Restricted payments and permitted acquisitions are subject to pro forma leverage tests set 0.25x inside the then-applicable covenant level.`,
+        `A 50% excess cash flow sweep stepping to 25% below 4.00x, and mandatory prepayments from asset sales and debt issuance, complete the package. Restricted payments and permitted acquisitions are subject to pro forma leverage tests set 0.25x inside the then-applicable covenant level.`,
       ].filter(Boolean),
-      bullets: security.collateral,
     },
     {
       id: 'recommendation',
@@ -195,7 +192,7 @@ export function buildMemoInputs({
     {
       id: 'input-security',
       label: 'Security terms',
-      detail: `${security.lien} package, pricing, collateral and ${security.covenants.length} financial covenants`,
+      detail: `${security.lien} package, pricing and ${security.covenants.length} financial covenants`,
       itemCount: security.covenants.length,
     },
     {
