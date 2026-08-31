@@ -32,10 +32,15 @@ and overview data only.
 ## Structure
 
 ```
-apps/web/          React + Vite + Tailwind + shadcn-style components
-packages/types/    Shared domain contracts (@uw/types)
+apps/web/src/
+  app/         bootstrap — entry, providers, router, chrome
+  features/    deals · securities · diligence · ic-memo
+  shared/      ui, components, hooks, lib, services
+packages/types/  Shared domain contracts (@uw/types)
 ```
 
-Components never import seed data — they go through `services/underwriting.ts`, which defines the
-`UnderwritingService` interface and exports a single instance. Swapping the local mock for a real
-backend (`apps/api`) is one assignment at the bottom of that file.
+Features are sliced by underwriting stage. Anything two or more features need lives in `shared/`.
+
+Components never import seed data — they go through `shared/services/underwriting`, which defines
+the `UnderwritingService` interface and exports a single instance. Swapping the local mock for a
+real backend (`apps/api`) is one assignment at the bottom of that file.
